@@ -76,7 +76,7 @@ include './config/db.php';
         <!-- <div class="col-md-6 mb-3">
           <label for="subject" class="form-label">Customer Id</label>
           <input type="text" class="form-control" id="subject" placeholder="Enter Subject">
-        </div>
+        </div>-->
 
 
         
@@ -92,7 +92,7 @@ include './config/db.php';
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>
-<?php //include 'scripts.php' ?>
+<?php include 'scripts.php' ?>
 <script>
     $(document).ready(function() {
 
@@ -121,6 +121,12 @@ include './config/db.php';
 
             $.post("add_customers.php", data, function(response) {
                     console.log("Success:", response); 
+                    swal({
+                        title:"Done",
+                        text:"Saved Sucessfully",
+                        icon:"success",
+                        button:"Ok",
+                    })
                 })
                 .fail(function(error) {
                     console.error("Error:", error);

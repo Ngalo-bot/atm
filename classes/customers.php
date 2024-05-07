@@ -30,7 +30,7 @@ class Customer {
     public function getCustomerById($id) {
       $sql = "SELECT * FROM customers WHERE id = ?";
       $stmt = $this->db->prepare($sql);
-      $stmt->bind_param("i", $id); // Bind parameter for security
+      $stmt->bind_param("s", $id); // Bind parameter for security
   
       $stmt->execute();
       $result = $stmt->get_result();
@@ -64,6 +64,11 @@ class Customer {
       } else {
         return false; // Indicate failure (consider error handling)
       }
+    }
+
+    public function loginCustomer($pin){
+      $stmt=$this->db->prepare("SELECT * FROM cust")
+
     }
   }
   
