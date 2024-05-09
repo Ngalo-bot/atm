@@ -21,16 +21,8 @@
         console.log(newvar);
       }
 
-     
-        
-        // swal({
-        //     title:"Error!",
-        //     text:"Something went wrong",
-        //     icon:"error",
-        //     button:"Ok",
-        // })
-    
 
+      //verify function
       const verify=(msg,user)=>{        
         $.ajax({
             type:'POST',
@@ -42,7 +34,21 @@
         })
       }
 
-        $("#closemodal").click(function(){
+      //enroll function
+      const enroll=(msg,user)=>{        
+        $.ajax({
+            type:'POST',
+            url:'config/socket.php',
+            data:{message:msg,id:user},
+            success:function(data){
+                console.log(data);
+            }
+        })
+      }
+
+
+
+      $("#closemodal").click(function(){
         
             $('#putfinger').modal('hide');
       });

@@ -1,4 +1,11 @@
-<?php include 'header.php'; ?>
+<?php 
+session_start();
+
+if(empty($_SESSION['name'])){
+    header('Location: stand.php');
+
+}
+include 'header.php'; ?>
 
 <div class="row" style="margin-bottom: 34px;margin-left: 45px;">
     <div class="col-md-3"><span style="font-size: 30px; color: white; font-weight: bold;">Deposit Cash</span></div>

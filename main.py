@@ -73,7 +73,7 @@ def enroll(user_id):
     db_connection = pymysql.connect(host='localhost',
                                     user='root',
                                     password='',
-                                    database='total_fitness',
+                                    database='atmdb',
                                     charset='utf8mb4',
                                     cursorclass=pymysql.cursors.DictCursor)
     try:
@@ -257,8 +257,9 @@ def handle_client(client_socket, client_address):
     if message.startswith('enroll'):
         # Extract the user_id from the message
         user_id = message.split('-')[1]
+        print("enrolling.....",user_id)
         enroll(user_id)
-    elif message.startswith('verfiy'):
+    elif message.startswith('verify'):
         user_id = message.split('-')[1]
         verify(user_id)
 

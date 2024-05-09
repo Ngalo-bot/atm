@@ -67,8 +67,24 @@ class Customer {
     }
 
     public function loginCustomer($pin){
-      $stmt=$this->db->prepare("SELECT * FROM cust")
+      $stmt=$this->db->prepare("SELECT * FROM cust");
 
     }
+
+    public function generate_account_number($length = 10) {
+      $digits = '0123456789';
+      $letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    
+      $all_chars = $digits . $letters;
+    
+      $account_number = '';
+      for ($i = 0; $i < $length; $i++) {
+        $account_number .= $all_chars[rand(0, strlen($all_chars) - 1)];
+      }
+    
+      return $account_number;
+    }
   }
+
+
   

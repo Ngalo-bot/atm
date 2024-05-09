@@ -1,5 +1,5 @@
 <?php 
-
+session_start();
 require_once 'classes/customers.php';
 include './config/db.php';
 
@@ -69,7 +69,7 @@ include './config/db.php';
         </div>
         <div class="col-md-6 mb-3">
           <label for="phone" class="form-label">Account Number</label>
-          <input id="accnumber" type="number" class="form-control" id="phone" placeholder="Enter Account Number" required>
+          <input id="accnumber" type="text" class="form-control" id="phone" placeholder="Enter Account Number" required>
         </div>
       </div>
       <div class="row">
@@ -86,13 +86,29 @@ include './config/db.php';
         </div>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
+      
     </form>
+    <button id="enroll" class="btn btn-primary">Enroll</button>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>
-<?php include 'scripts.php' ?>
+<?php include 'scripts.php'; include 'alerts.php';?>
+
+<?php
+  require_once 'classes/customers.php';
+  $customer=new Customer($db);
+      $account_number = $customer->generate_account_number();
+    
+  ?>
+
+  <script>
+    
+      // If account number is generated, set it to the text field
+      document.getElementById('accnumber').value = "<?php echo $account_number; ?>";
+    
+  </script>
 <script>
     $(document).ready(function() {
 
@@ -131,14 +147,16 @@ include './config/db.php';
                 .fail(function(error) {
                     console.error("Error:", error);
                 });
-
-        
-
-       
+               
     });
 
 
-       
+    $("#enroll").click(function() {  
+      console.log("HHUHIHIJO")
+       const id="<?php $_SESSION['$account_num'];?> ";
+       enroll("enroll",id);
+        $('#enrollfinger').modal('show');
+    });
 
 
 

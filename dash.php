@@ -1,4 +1,11 @@
-<?php include 'header.php'; ?>
+<?php 
+session_start();
+
+if(empty($_SESSION['name'])){
+    header('Location: stand.php');
+
+}
+include 'header.php'; ?>
 
 <div class="row" style="margin-bottom: 34px;margin-left: 45px;">
             <div class="col-md-3"><span style="font-size: larger; color: white; font-weight: bold;">Select Service</span></div>
@@ -169,6 +176,9 @@
         const switchTab=(path)=>{
             window.location.href = path;
         }
+        $("#goadmin").click(function () {
+                            window.location.href = "add_customers.php";
+                        })
 
     });
 </script>

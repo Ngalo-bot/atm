@@ -49,6 +49,13 @@
                     <h1 style="color:white; font-weight:bolder;text-align:center; ">PLACE YOUR </h1>
                     <h3 style="color:red; font-weight:bolder;text-align:center;">FINGER</h3>
                     <h3 style="color:red; font-weight:bolder;text-align:center;"> TO</h3>
+                    
+                    <?php 
+                    session_start();
+                    if (!empty($_SESSION['login_error'])){
+                        echo "<h3 style='color:red; font-weight:bolder;text-align:center;'>" .$_SESSION['login_error']. "</h3>";
+                    }
+                    ?>
                     <h3 style="color:red; font-weight:bolder;text-align:center;">LOGIN</h3>
                     <!-- <img src="assets/img/finger.gif" style="height:80%; width:100%" /> -->
                 </div>
@@ -79,8 +86,8 @@
                     $("#putfingerlogin").click(function () {
 
                         window.location.href='dash.php';
+                        console.log('kkk');
                     });
-
 
 
                     const backspace=()=>{
@@ -88,6 +95,41 @@
                         $("#pin").val(newvar);
                         
                     }
+
+                    $("#menter").click(function () {
+                        const pin=$('#pin').val();
+                        console.log(pin);
+                        
+                        const data = {
+                            pin: pin,
+                            
+                        }
+
+                        $.post("login.php", data, function(response) {
+                            console.log("before");                                                                                         
+                            })
+                            .done(function(data, status) {
+                                $("#cmodal").click(function () {
+                                    
+                                $("#putpwd").modal('hide');
+                                });
+
+                                console.log("Success:"); 
+                                console.log("Response data:", data);
+                                console.log("Status code:", status);
+
+                                if(data=="DONE"){
+                                    console.log("cheng screen"); 
+                                    window.location.href="dash.php";
+                                }else{
+                                    window.location.href="stand.php";
+                                }
+                            })
+                            .fail(function(error) {
+                                console.error("Error:", error);
+                            });
+
+                        });
 
             });
 
