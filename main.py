@@ -23,15 +23,13 @@ def verify_template(reader, verify_temp, reg_temp):
     return result
 
 
-def verify_against_database(reader, verify_temp):
-    db_connection = pymysql.connect(
-        host='localhost',
-        user='root',
-        password='',
-        database='total_fitness',
-        charset='utf8mb4',
-        cursorclass=pymysql.cursors.DictCursor
-    )
+def verify_login_against_database(reader, verify_temp):
+    db_connection = pymysql.connect(host='localhost',
+                                    user='root',
+                                    password='',
+                                    database='atmdb',
+                                    charset='utf8mb4',
+                                    cursorclass=pymysql.cursors.DictCursor)
 
     try:
         with db_connection.cursor() as cursor:
@@ -46,10 +44,10 @@ def verify_against_database(reader, verify_temp):
                 result = verify_template(reader, verify_temp, db_template)
                 if result:
                     # Update the row with ID=1
-                    sql = "UPDATE fingerprint_flag SET auth_state = %s, user_id = %s WHERE id = %s"
-                    values = ("1", str(row['user_id']), 1)
-                    cursor.execute(sql, values)
-                    # Commit the changes
+                    # sql = "UPDATE fingerprint_flag SET auth_state = %s, user_id = %s WHERE id = %s"
+                    # values = ("1", str(row['user_id']), 1)
+                    # cursor.execute(sql, values)
+                    # # Commit the changes
                     db_connection.commit()
                     return True, row['user_id']
 
@@ -61,7 +59,43 @@ def verify_against_database(reader, verify_temp):
         db_connection.close()
 
 
+def verify_against_database(reader, verify_temp,user_id):
+    db_connection = pymysql.connect(host='localhost',
+                                    user='root',
+                                    password='',
+                                    database='atmdb',
+                                    charset='utf8mb4',
+                                    cursorclass=pymysql.cursors.DictCursor)
 
+    try:
+        with db_connection.cursor() as cursor:
+            # Fetch all rows from the fingerprint_templates table
+            sql = "SELECT template FROM fingerprint_templates WHERE user_id = ?"
+            cursor.execute(sql,(user_id,))
+            templates_from_db = cursor.fetchall()
+
+            # Verify against each template in the database
+            for row in templates_from_db:
+                db_template = row['template']  # Retrieve template from the database
+                result = verify_template(reader, verify_temp, db_template)
+                if result:
+                    # Update the row with ID=1
+                    # sql = "UPDATE fingerprint_flag SET auth_state = %s, user_id = %s WHERE id = %s"
+                    # values = ("1", str(row['user_id']), 1)
+                    # cursor.execute(sql, values)
+                    # # Commit the changes
+                    db_connection.commit()
+                    return True, row['user_id']
+
+        return False, None
+    except Exception as e:
+        print(f"Error during database verification: {e}")
+        return False, None
+    finally:
+        db_connection.close()
+
+
+#ENROLLLLLLLLL
     
 def enroll(user_id):
     
@@ -89,17 +123,23 @@ def enroll(user_id):
                 print("a")
                 templates = []
                 print("b")
+                state=0
                 for i in range(3):
                     while True:
                         capture = zkfp2.AcquireFingerprint()
                         if capture:
                             print("a")
-                            print(f'Fingerprint captured for User {user_id}, Template {i + 1}')
-                            msg='Fingerprint Template Captured, Place Finger On Sensor Again'
-                            state=  False
-                            url = 'http://localhost/atm/show.php'
+                            v=i + 1
+                            print(f'Fingerprint captured for User {user_id}, Template {v}')
+                            msg=f'Template Captured {v}'
+                            if v==3:
+                                state=1
+                            else:
+                                state=v
+                            url = 'http://localhost/atm/process.php'
                             data = {
                                 'msg': msg,
+                                'user_id':user_id,
                                 'state':state
                                 }
                             response = requests.post(url, data=data)
@@ -116,13 +156,18 @@ def enroll(user_id):
                 cursor.execute(sql_insert_template, (user_id, reg_temp, 1))
                 db_connection.commit()
                 print(f'Templates for User {user_id} saved in the database')
-                msg='Fingerprint Successfully Recorded'
-                state=  True
-                url = 'http://localhost/atm/reg.php'
-                data = {'msg': msg,'state':state}
-                response = requests.post(url, data=data)
+               
                 templates.clear()
+                url = 'http://localhost/atm/process.php'
+                msg='Completed'
+                data = {
+                    'msg': msg,
+                    'user_id':user_id,
+                    'state':1
+                    }
+                response = requests.post(url, data=data)
                 return print({'message': f'Enrollment completed for User {user_id}'})
+            
             
             except Exception as e:
                 return print({'message': f'Error during device initialization or opening: {str(e)}'})
@@ -133,35 +178,72 @@ def enroll(user_id):
         db_connection.close()
 
 
-def verify(reader, gate_id):
+def verify(user_id):
+    # reader=zkfp2
+    print("starting to verify")
     
     try:
-        capture = reader.AcquireFingerprint()
-        if capture:
-            print('Fingerprint captured for verification by')
-            print(reader)
-            verify_temp, img = capture
-            verification_result, user_id = verify_against_database(reader, verify_temp)
-            if verification_result:
-                reader.Light('green')
-                if gate_id == 'readery':
-                    # commander_Welcome(gate_id)
-                    print("WELCOME")
-                elif gate_id == 'readerx':
-                    # commander_Exit(gate_id)
-                    print("GOODBYE")
-                elif gate_id == 'readerw':
-                    # enrolling()
-                    print("ENROLLING")
-                    globalThing = 1
-                    user_id = user_id + 1
-                return {'user_id': user_id, 'auth_state': True}
-            else:
-                reader.Light('red')
-                return {'auth_state': False}
-    except:
-       # print(gate_id, "not working")
-       pass
+        
+        while True:
+            capture = zkfp2.AcquireFingerprint()
+          
+            if capture:
+                print('Fingerprint captured for verification by')
+                print(zkfp2)
+                verify_temp, img = capture
+                verification_result, user_id = verify_against_database(zkfp2, verify_temp)
+                if verification_result:
+                    zkfp2.Light('green')
+                    print("VERIFIED CORRECT",user_id)
+                    url = 'http://localhost/atm/put_into_process.php'
+                    data = {
+                        
+                        'user_id':user_id,
+                        
+                        }
+                    response = requests.post(url, data=data)
+
+                    return {'user_id': user_id, 'auth_state': True}
+                    break
+                else:
+                    zkfp2.Light('red')
+                    print("UNVERIFIED")
+                    return {'auth_state': False}
+                    break
+        print("here222")
+    except Exception as e:
+       print(str(e))
+
+def verify_login(user_id):
+    # reader=zkfp2
+    print("starting to verify")
+    
+    try:
+        
+        while True:
+            capture = zkfp2.AcquireFingerprint()
+          
+            if capture:
+                print('Fingerprint captured for verification by')
+                print(zkfp2)
+                verify_temp, img = capture
+                verification_result, user_id = verify_login_against_database(zkfp2, verify_temp)
+                if verification_result:
+                    zkfp2.Light('green')
+                    print("VERIFIED CORRECT",user_id)
+
+
+                    return {'user_id': user_id, 'auth_state': True}
+                    break
+                else:
+                    zkfp2.Light('red')
+                    print("UNVERIFIED")
+                    return {'auth_state': False}
+                    break
+        print("here222")
+    except Exception as e:
+       print(str(e))
+       
 
 
 # def commander_Welcome(gate_id):
@@ -215,32 +297,27 @@ def controller_fx(value):
 def print_boolean_thread(reader, gate_id):
     global cont
     print(cont)
-    while True:
+    # while True:
 
-        if cont == 0:
-            verify(reader, gate_id)
-            #check_device_connection(reader,gate_id)
-        elif cont == 1:
-            # Add the desired action for 'readery'
-            print("Perform action for 'readery'")
-        elif cont == 2:
-            # Add the desired action for 'readerx'
-            print("Perform action for 'readerx'")
-        elif cont == 3:
-            # Add the desired action for 'readerw'
-            enroll(gate_id)
-            print("Perform action for 'readerw'")
+    #     if cont == 0:
+    #         verify(reader, gate_id)
+    #         #check_device_connection(reader,gate_id)
+    #     elif cont == 1:
+    #         # Add the desired action for 'readery'
+    #         print("Perform action for 'readery'")
+    #     elif cont == 2:
+    #         # Add the desired action for 'readerx'
+    #         print("Perform action for 'readerx'")
+    #     elif cont == 3:
+    #         # Add the desired action for 'readerw'
+    #         enroll(gate_id)
+    #         print("Perform action for 'readerw'")
 
 
 thread1 = threading.Thread(target=print_boolean_thread, args=(zkfp2, 'readery'))
 
 thread1.start()
 
-#Start the threads to check device connection
-# device_connection_thread1 = threading.Thread(target=check_device_connection, args=(zkfp2,))
-# device_connection_thread2 = threading.Thread(target=check_device_connection, args=(zkfp3,))
-# device_connection_thread1.start()
-# device_connection_thread2.start()
 
 server_socket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 server_socket.bind(('localhost',8080))
@@ -261,7 +338,12 @@ def handle_client(client_socket, client_address):
         enroll(user_id)
     elif message.startswith('verify'):
         user_id = message.split('-')[1]
+        print("verifying.....",user_id)
         verify(user_id)
+    elif message.startswith('login'):
+        user_id = message.split('-')[1]
+        print("verifying.....",user_id)
+        verify_login(user_id)
 
 # Rest of the code
 while True:

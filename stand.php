@@ -1,3 +1,34 @@
+<?php 
+include "config/db.php";
+//'5CF5VEBXE2'
+if ($_SERVER['REQUEST_METHOD'] === 'POST'){
+    $userid=$_POST['user_id'];
+    if(isset($userid)){
+
+        echo $userid;
+        
+    $sql = "SELECT * FROM customers WHERE account_number = '$userid'";
+    $result = $db->query($sql);
+
+    if ($result->num_rows === 1) {
+        $user = $result->fetch_assoc(); 
+                
+        $_SESSION['name'] = $user['name'];
+        $_SESSION['surname'] = $user['surname']; 
+        $_SESSION['$account_number']=$user['account_number'];
+        echo "DONE";
+        header('Location: dash.php');
+        
+        
+    } else {
+        echo "REJECTED";
+        $_SESSION['login_error'] = "Invalid username or password";
+        header('Location: stand.php'); 
+        
+    }
+    }
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -136,6 +167,56 @@
             </script>
 
 </body>
+<?php include 'scripts.php'; ?>
+<script>
+    $(document).ready(function() {
+
+        verify("login",1);
+
+        function updateText() {
+
+fetch('update_modal.php') // Fetch the PHP script to get the latest value
+  .then(response => response.text())
+  .then(data => {
+   
+    $('#process').text(data) ;
+    const notif=$('#process').text();
+    console.log(notif)
+    if(notif=='Completed'){
+      swal({
+                  title:"Completed",
+                  text:"Saved Sucessfully",
+                  icon:"success",
+                  button:"Ok",
+                  timer:2000,
+              })
+              
+      $('#enrollfinger').modal('hide');
+      emptyProcess();
+      clearInterval(intervalId);
+    }
+  })
+  .catch(error => {
+    console.error('Error fetching data:', error);
+    // Handle errors gracefully (e.g., display an error message)
+  });
+}
+
+
+const checkLogin=()=>{
+    
+    $.post('check_login.php',function(response){
+    console.log("LOGIN CHECKED")
+    })
+    .fail(function(error) {
+    console.error("Error:", error);
+    });
+    }
+
+checkLogin();
+    
+        });
+</script>
 
 </html>
 

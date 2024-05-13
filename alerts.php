@@ -100,7 +100,12 @@
       
       </div>
       <div class="modal-footer">
-        <button style="background-color:red; width:100px; margin:0 auto" id="closemodal" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <div class="row">
+          <div class="col-6"><button style="background-color:red; width:100px; margin-right:5px;" id="closeenmodal" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
+          <div class="col-6"><span id="process" style="color:white;">Ready</div>
+         
+        </div>
+        
         
       </div>
     </div>

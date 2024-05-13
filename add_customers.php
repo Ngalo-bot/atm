@@ -27,6 +27,15 @@ include './config/db.php';
 
     }
 
+    
+  
+  $customer=new Customer($db);
+      $account_number = $customer->generate_account_number();
+
+      
+// Assuming you have retrieved the account number from the session
+    // $accountNumber = $_SESSION['account_number'];
+
  ?>
 
 <!DOCTYPE html>
@@ -35,7 +44,10 @@ include './config/db.php';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Customers</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container mt-3">
@@ -91,15 +103,14 @@ include './config/db.php';
     <button id="enroll" class="btn btn-primary">Enroll</button>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  <script src="assets/bootstrap/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>
 <?php include 'scripts.php'; include 'alerts.php';?>
 
 <?php
-  require_once 'classes/customers.php';
-  $customer=new Customer($db);
-      $account_number = $customer->generate_account_number();
+
+
     
   ?>
 
@@ -109,6 +120,8 @@ include './config/db.php';
       document.getElementById('accnumber').value = "<?php echo $account_number; ?>";
     
   </script>
+
+
 <script>
     $(document).ready(function() {
 
@@ -152,13 +165,67 @@ include './config/db.php';
 
 
     $("#enroll").click(function() {  
-      console.log("HHUHIHIJO")
-       const id="<?php $_SESSION['$account_num'];?> ";
+      console.log("showed------")
+      $('#enrollfinger').modal('show');
+       const id=$('#accnumber').val();
        enroll("enroll",id);
-        $('#enrollfinger').modal('show');
+       console.log("showed------"+id)
+       
     });
 
+    var intervalId=setInterval(updateText, 1000);
 
+    $("#closeenmodal").click(function() { 
+      $('#enrollfinger').modal('hide');
+      console.log("hidden------")
+      clearInterval(intervalId);
+      
+    }); 
 
+    
+  
+    function updateText() {
+
+      fetch('update_modal.php') // Fetch the PHP script to get the latest value
+        .then(response => response.text())
+        .then(data => {
+         
+          $('#process').text(data) ;
+          const notif=$('#process').text();
+          console.log(notif)
+          if(notif=='Completed'){
+            swal({
+                        title:"Completed",
+                        text:"Saved Sucessfully",
+                        icon:"success",
+                        button:"Ok",
+                        timer:2000,
+                    })
+                    
+            $('#enrollfinger').modal('hide');
+            emptyProcess();
+            clearInterval(intervalId);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          // Handle errors gracefully (e.g., display an error message)
+        });
+    }
+    
+   
+  const emptyProcess=()=>{
+    data={
+      completed:1,
+    }
+    $.post('update_modal.php',data,function(response){
+      console.log("DELETED PROCESS")
+    })
+    .fail(function(error) {
+        console.error("Error:", error);
+    });
+  }
+
+  emptyProcess();
     });
 </script>

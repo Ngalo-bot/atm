@@ -5,14 +5,16 @@ if(empty($_SESSION['name'])){
     header('Location: stand.php');
 
 }
-include 'header.php'; ?>
+include 'header.php'; 
+$userId=$_SESSION['$account_number'];
+?>
 
 <div class="row" style="margin-bottom: 34px;margin-left: 45px;">
     <div class="col-md-3"><span style="font-size: 30px; color: white; font-weight: bold;">Withdraw Cash</span></div>
     <div class="col"></div>
 </div>
 
-<div class="row" style="margin-bottom: 40px;margin-top: 70px;">
+<div class="row" style="margin-bottom: 40px;margin-top: 30px;">
     <div class="col-6">
         <div class="row " style="margin-left: 45px;">
             <div class="col-3">
@@ -133,7 +135,7 @@ include 'header.php'; ?>
             </div>
 
             <div class="row" style="margin-top: 9px;margin-left: 45px;">
-                <div class="col-3">
+                <div class="col-6">
                     <div class="card " id="quit"  >
                             <div class="card-body">
                                 <h3 class="card-title " >Quit</h3>
@@ -163,7 +165,7 @@ include 'header.php'; ?>
                                     style="font-size:40px;
                                     background:rgba(0,0,0,0.3);
                                     color:white; border-style:none;
-                                     font-weight:bolder; margin-left:-4px;  height:60px; width:235px; border-radius: 3%;font-family: 'Arial Rounded MT Bold', Arial, sans-serif;"
+                                     font-weight:bolder; margin-left:-14px;  height:60px; width:235px; border-radius: 3%;font-family: 'Arial Rounded MT Bold', Arial, sans-serif;"
                                     type="text" class="form-control"  aria-describedby="amount">
                                 <br>
                                
@@ -182,7 +184,21 @@ include 'header.php'; ?>
 </div>
 
 
-<?php include 'alerts.php'; include 'scripts.php'; ?>
+<?php include 'scripts.php'; ?>
+<script>
+    $(document).ready(function() {
+
+     $("#submit").click(function(){
+        const id="<?php echo $userId; ?>";
+        console.log("--");
+        console.log(id);
+        verify("verify",id);
+        $('#putfinger').modal('show');
+
+      });
+
+        });
+</script>
 </body>
 
 </html>

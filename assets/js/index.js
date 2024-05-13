@@ -23,7 +23,8 @@
 
 
       //verify function
-      const verify=(msg,user)=>{        
+      const verify=(msg,user)=>{     
+        console.log(msg,user)   ;
         $.ajax({
             type:'POST',
             url:'config/socket.php',

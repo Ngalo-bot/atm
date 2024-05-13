@@ -65,7 +65,7 @@ $(document).ready(function() {
     });
 
     $("#submit").click(function(){
-      verify("verify",16);
+      verify("verify",17);
       $('#putfinger').modal('show');
 
     });

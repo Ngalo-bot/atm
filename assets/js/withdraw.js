@@ -64,10 +64,13 @@ $(document).ready(function() {
         backspace();
       });
 
-      $("#submit").click(function(){
-        verify("verify",16);
-        $('#putfinger').modal('show');
+      // $("#submit").click(function(){
+      //   const id="<?php echo $userId; ?>";
+      //   console.log("--");
+      //   console.log(id);
+      //   // verify("verify",id);
+      //   $('#putfinger').modal('show');
 
-      });
+      // });
 
         });
