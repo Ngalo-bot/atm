@@ -1,27 +1,39 @@
 <?php 
 include 'config/db.php';
-// Prepare SQL statements to prevent SQL injection
-  $selectStmt = $db->prepare("SELECT name, surname FROM customers WHERE user_id = ?");
-  $insertStmt = $db->prepare("INSERT INTO login_process (user_id, name, surname,status) VALUES (?, ?, ?,?)");
 
-  // Execute select statement with user ID
-  $selectStmt->execute([$user_id]);
-  $res=$selectStmt->get_result();
+$user_id=$_POST['userID'];
 
-  // Check if a user with the provided ID exists
-  if ($res) {
-    $row = mysqli_fetch_array($res);
+    if(isset($user_id)){  
+        // Prepare SQL statements to prevent SQL injection
+        $selectStmt = $db->prepare("SELECT name, surname FROM customers WHERE account_number = ?");
+        $insertStmt = $db->prepare("INSERT INTO login_process (user_id, name, surname,status) VALUES (?, ?, ?,?)");
+        $deletStmt=$db->prepare("DELETE FROM login_process");
 
-    // Extract name and surname from retrieved data
-    $name = $row["name"];
-    $surname = $row["surname"];
-    $state='logged_in';
+        // Execute select statement with user ID
+        $selectStmt->execute([$user_id]);
+        $res=$selectStmt->get_result();
 
-    // Execute insert statement with user ID, name, and surname
-    $insertStmt->execute([$user_id, $name, $surname,$state]);
+        // Check if a user with the provided ID exists
+        if ($res) {
+            $row = mysqli_fetch_array($res);
 
-    echo "User data (name: $name, surname: $surname) inserted into login_process successfully!";
-  } else {
-    echo "Error: No user found with ID: $user_id";
-  }
+            // Extract name and surname from retrieved data
+            $name = $row["name"];
+            $surname = $row["surname"];
+            $state='logged_in';
+
+            // Execute insert statement with user ID, name, and surname
+            $deletStmt->execute();
+            $insertStmt->execute([$user_id, $name, $surname,$state]);
+            
+
+            echo "User data (name: $name, surname: $surname) inserted into login_process successfully!";
+        } else {
+            echo "Error: No user found with ID: $user_id";
+        }
+
+    }
+    else{
+        echo "nothinh yet";
+    }
 

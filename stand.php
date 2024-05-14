@@ -1,34 +1,3 @@
-<?php 
-include "config/db.php";
-//'5CF5VEBXE2'
-if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $userid=$_POST['user_id'];
-    if(isset($userid)){
-
-        echo $userid;
-        
-    $sql = "SELECT * FROM customers WHERE account_number = '$userid'";
-    $result = $db->query($sql);
-
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc(); 
-                
-        $_SESSION['name'] = $user['name'];
-        $_SESSION['surname'] = $user['surname']; 
-        $_SESSION['$account_number']=$user['account_number'];
-        echo "DONE";
-        header('Location: dash.php');
-        
-        
-    } else {
-        echo "REJECTED";
-        $_SESSION['login_error'] = "Invalid username or password";
-        header('Location: stand.php'); 
-        
-    }
-    }
-    }
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -77,17 +46,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
                 <div class="col-4"></div>
                 <div class="col" > 
                     <img id="putfingerlogin" src="assets/img/fingerp.png" style="height:120px;margin-left:100px;"/>
-                    <h1 style="color:white; font-weight:bolder;text-align:center; ">PLACE YOUR </h1>
-                    <h3 style="color:red; font-weight:bolder;text-align:center;">FINGER</h3>
-                    <h3 style="color:red; font-weight:bolder;text-align:center;"> TO</h3>
+                    <!-- <h1 style="color:white; font-weight:bolder;text-align:center; "> </h1>
+                    <h3 style="color:red; font-weight:bolder;text-align:center;"></h3>
+                    <h3 style="color:red; font-weight:bolder;text-align:center;"></h3> -->
                     
                     <?php 
                     session_start();
-                    if (!empty($_SESSION['login_error'])){
-                        echo "<h3 style='color:red; font-weight:bolder;text-align:center;'>" .$_SESSION['login_error']. "</h3>";
-                    }
+                    // if (!empty($_SESSION['login_error'])){
+                    //     echo "<h3 style='color:red; font-weight:bolder;text-align:center;'>" .$_SESSION['login_error']. "</h3>";
+                    // }
                     ?>
-                    <h3 style="color:red; font-weight:bolder;text-align:center;">LOGIN</h3>
+                    <button id="callverify" style="border:2px solid white;height:200px;width:100%;color:white; border-radius:20%;background-color:blue;">PRESS HERE<br>AND PLACE YOUR FINGER<br>TO LOGIN</button>
                     <!-- <img src="assets/img/finger.gif" style="height:80%; width:100%" /> -->
                 </div>
                 <div class="col-4"></div>
@@ -95,129 +64,140 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
           
         
     </div>
-    <?php include 'alerts.php'; ?>
+    <?php include 'alerts.php';include 'scripts.php'; ?>
+         
+<script>
+    $(document).ready(function () {
+
+        $("#usepwd").click(function () {
+
+            $("#putpwd").modal('show');
+        });
+
+        $("#cmodal").click(function () {
+
+            $("#putpwd").modal('hide');
+        });
 
 
-            <?php include 'scripts.php'; ?>
+        $("#putfingerlogin").click(function () {
 
-            <script>
-                $(document).ready(function () {
+            window.location.href='dash.php';
+            console.log('kkk');
+        });
 
-                    $("#usepwd").click(function () {
 
-                        $("#putpwd").modal('show');
-                    });
+        const backspace=()=>{
+            const newvar=$("#pin").val().slice(0,-1);
+            $("#pin").val(newvar);
+            
+        }
 
+        $("#menter").click(function () {
+            const pin=$('#pin').val();
+            console.log(pin);
+            
+            const data = {
+                pin: pin,
+                
+            }
+
+            $.post("login.php", data, function(response) {
+                console.log("before");                                                                                         
+                })
+                .done(function(data, status) {
                     $("#cmodal").click(function () {
-
-                        $("#putpwd").modal('hide');
-                    });
-
-
-                    $("#putfingerlogin").click(function () {
-
-                        window.location.href='dash.php';
-                        console.log('kkk');
-                    });
-
-
-                    const backspace=()=>{
-                        const newvar=$("#pin").val().slice(0,-1);
-                        $("#pin").val(newvar);
                         
+                    $("#putpwd").modal('hide');
+                    });
+
+                    console.log("Success:"); 
+                    console.log("Response data:", data);
+                    console.log("Status code:", status);
+
+                    if(data=="DONE"){
+                        console.log("cheng screen"); 
+                        window.location.href="dash.php";
+                    }else{
+                        window.location.href="stand.php";
                     }
-
-                    $("#menter").click(function () {
-                        const pin=$('#pin').val();
-                        console.log(pin);
-                        
-                        const data = {
-                            pin: pin,
-                            
-                        }
-
-                        $.post("login.php", data, function(response) {
-                            console.log("before");                                                                                         
-                            })
-                            .done(function(data, status) {
-                                $("#cmodal").click(function () {
-                                    
-                                $("#putpwd").modal('hide');
-                                });
-
-                                console.log("Success:"); 
-                                console.log("Response data:", data);
-                                console.log("Status code:", status);
-
-                                if(data=="DONE"){
-                                    console.log("cheng screen"); 
-                                    window.location.href="dash.php";
-                                }else{
-                                    window.location.href="stand.php";
-                                }
-                            })
-                            .fail(function(error) {
-                                console.error("Error:", error);
-                            });
-
-                        });
+                })
+                .fail(function(error) {
+                    console.error("Error:", error);
+                });
 
             });
 
-            </script>
-
-</body>
-<?php include 'scripts.php'; ?>
-<script>
-    $(document).ready(function() {
-
+    
+            
+    
+    $("#callverify").click(function(){
+        
         verify("login",1);
-
-        function updateText() {
-
-fetch('update_modal.php') // Fetch the PHP script to get the latest value
-  .then(response => response.text())
-  .then(data => {
-   
-    $('#process').text(data) ;
-    const notif=$('#process').text();
-    console.log(notif)
-    if(notif=='Completed'){
-      swal({
-                  title:"Completed",
-                  text:"Saved Sucessfully",
-                  icon:"success",
-                  button:"Ok",
-                  timer:2000,
-              })
-              
-      $('#enrollfinger').modal('hide');
-      emptyProcess();
-      clearInterval(intervalId);
-    }
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-    // Handle errors gracefully (e.g., display an error message)
-  });
-}
-
-
-const checkLogin=()=>{
-    
-    $.post('check_login.php',function(response){
-    console.log("LOGIN CHECKED")
     })
-    .fail(function(error) {
-    console.error("Error:", error);
-    });
-    }
+  
+    //SEND LOGIN DATA TO LOGIN.PHP
+    const prompt_login=(user)=>{ 
+        data={
+            user_id:user
+        }
 
-checkLogin();
+        console.log('------')
+        console.log(data.user_id);
+  
+        $.post("login2.php", data, function(response) {
+            console.log("before");                                                                                         
+            })
+            .done(function(data, status) {
+                console.log("binsides");  
+                console.log(data);  
+                if(data=="DONE"){
+                    console.log("cheng screen"); 
+                    window.location.href="dash.php";
+                }else{
+                    login=setInterval(checkLogin,2000);
+                }
+            })
+            .fail(function(error) {
+                console.error("Error:", error);
+            });
+  
+        }
     
-        });
+  //CHECK IF ANY LOGGED IN
+    const checkLogin=()=>{
+            
+            $.post('check_login.php',{},function(response){
+                console.log("checking login person")
+            })
+            .done(function(data){
+                if(data=='here'){
+                    console.log("nothing");
+                }else{
+                    console.log('logged in');
+                    // console.log(data);
+                    clearInterval(login);
+                    prompt_login(data);
+                }
+  
+            })
+            .fail(function(error) {
+                console.error("Error:", error);
+            });
+        }
+  
+  var login=setInterval(checkLogin,2000);
+    
+  
+
+
+
+
+});
+
 </script>
+<script src="assets/js/stand.js"></script>
+</body>
 
 </html>
 
-<script src="assets/js/stand.js"></script>

@@ -177,8 +177,28 @@ include 'header.php'; ?>
             window.location.href = path;
         }
         $("#goadmin").click(function () {
-                            window.location.href = "add_customers.php";
-                        })
+            window.location.href = "add_customers.php";
+        })
+
+        $("#logout").click(function(){
+            fetch('logout.php', {
+                    method: 'POST',
+                    credentials: 'same-origin' // Ensure that the request sends cookies
+                })
+                .then(response => {
+                    if (response.ok) {
+                    // Redirect the user to the desired page after logout
+                    window.location.href = 'stand.php'; // Replace with the appropriate URL
+                    } else {
+                    // Handle error if logout fails
+                    console.error('Logout failed.');
+                    }
+                })
+                .catch(error => {
+                    // Handle error if there is a network issue
+                    console.error('Network error:', error);
+                });
+        })
 
     });
 </script>

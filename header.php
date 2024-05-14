@@ -51,7 +51,7 @@
                             }
                             ?>
 
-                            <li><a class="dropdown-item" href="index.php">Logout</a></li>
+                            <li><a class="dropdown-item" id="logout">Logout</a></li>
 
                         </ul>
                     </div>

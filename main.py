@@ -195,13 +195,8 @@ def verify(user_id):
                 if verification_result:
                     zkfp2.Light('green')
                     print("VERIFIED CORRECT",user_id)
-                    url = 'http://localhost/atm/put_into_process.php'
-                    data = {
-                        
-                        'user_id':user_id,
-                        
-                        }
-                    response = requests.post(url, data=data)
+                    print('-------------')
+                   
 
                     return {'user_id': user_id, 'auth_state': True}
                     break
@@ -231,6 +226,16 @@ def verify_login(user_id):
                 if verification_result:
                     zkfp2.Light('green')
                     print("VERIFIED CORRECT",user_id)
+                    url = 'http://localhost/atm/put_into_process.php'
+                    
+                    data = {
+                        
+                        'userID':user_id,
+                        
+                        }
+                    res = requests.post(url, data=data)
+                    print(res.status_code)
+                    print(res.text)
 
 
                     return {'user_id': user_id, 'auth_state': True}

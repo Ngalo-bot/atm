@@ -1,7 +1,7 @@
 import cv2
 
 # Specify video file path (replace with your video path)
-video_path = ""
+video_path = "http://192.168.137.186:81/stream"
 
 # Create a video capture object
 cap = cv2.VideoCapture(video_path)
