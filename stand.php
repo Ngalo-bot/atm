@@ -188,10 +188,6 @@
   
   var login=setInterval(checkLogin,2000);
     
-  
-
-
-
 
 });
 

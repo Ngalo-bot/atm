@@ -1,11 +1,11 @@
-// import {placeAmt} from 'index.js'
-
 
 $(document).ready(function() {
 
+ 
+
   $("#one").click(function() {
-      
-      placeAmt(1);
+
+    placeAmt(1);
     });
 
     $("#two").click(function() {
@@ -64,10 +64,6 @@ $(document).ready(function() {
       backspace();
     });
 
-    $("#submit").click(function(){
-      verify("verify",17);
-      $('#putfinger').modal('show');
+    
 
-    });
-
-      });
+  });

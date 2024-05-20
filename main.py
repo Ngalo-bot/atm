@@ -5,6 +5,7 @@ import threading
 import pymysql
 from pyzkfp import ZKFP2
 import serial
+import traceback; 
 
 # Global boolean variables
 cont = 0
@@ -66,12 +67,13 @@ def verify_against_database(reader, verify_temp,user_id):
                                     database='atmdb',
                                     charset='utf8mb4',
                                     cursorclass=pymysql.cursors.DictCursor)
+    
 
     try:
         with db_connection.cursor() as cursor:
             # Fetch all rows from the fingerprint_templates table
-            sql = "SELECT template FROM fingerprint_templates WHERE user_id = ?"
-            cursor.execute(sql,(user_id,))
+            sql = "SELECT template,user_id FROM fingerprint_templates WHERE user_id = %s"
+            cursor.execute(sql,(str(user_id)))
             templates_from_db = cursor.fetchall()
 
             # Verify against each template in the database
@@ -85,11 +87,11 @@ def verify_against_database(reader, verify_temp,user_id):
                     # cursor.execute(sql, values)
                     # # Commit the changes
                     db_connection.commit()
-                    return True, row['user_id']
+                    return True ,row['user_id']
 
         return False, None
     except Exception as e:
-        print(f"Error during database verification: {e}")
+        print(traceback.format_exc())
         return False, None
     finally:
         db_connection.close()
@@ -136,7 +138,7 @@ def enroll(user_id):
                                 state=1
                             else:
                                 state=v
-                            url = 'http://localhost/atm/process.php'
+                            url = 'http://localhost/pro/atm/process.php'
                             data = {
                                 'msg': msg,
                                 'user_id':user_id,
@@ -158,7 +160,7 @@ def enroll(user_id):
                 print(f'Templates for User {user_id} saved in the database')
                
                 templates.clear()
-                url = 'http://localhost/atm/process.php'
+                url = 'http://localhost/pro/atm/process.php'
                 msg='Completed'
                 data = {
                     'msg': msg,
@@ -191,12 +193,21 @@ def verify(user_id):
                 print('Fingerprint captured for verification by')
                 print(zkfp2)
                 verify_temp, img = capture
-                verification_result, user_id = verify_against_database(zkfp2, verify_temp)
+                verification_result, user_id = verify_against_database(zkfp2, verify_temp,user_id)
                 if verification_result:
                     zkfp2.Light('green')
                     print("VERIFIED CORRECT",user_id)
                     print('-------------')
-                   
+                    url = 'http://localhost/pro/atm/verification.php'
+                    
+                    data = {
+                        
+                        'userID':user_id,
+                        
+                        }
+                    res = requests.post(url, data=data)
+                    print(res.status_code)
+                    print(res.text)
 
                     return {'user_id': user_id, 'auth_state': True}
                     break
@@ -207,7 +218,7 @@ def verify(user_id):
                     break
         print("here222")
     except Exception as e:
-       print(str(e))
+       print("err--",str(e))
 
 def verify_login(user_id):
     # reader=zkfp2
@@ -226,7 +237,7 @@ def verify_login(user_id):
                 if verification_result:
                     zkfp2.Light('green')
                     print("VERIFIED CORRECT",user_id)
-                    url = 'http://localhost/atm/put_into_process.php'
+                    url = 'http://localhost/pro/atm/put_into_process.php'
                     
                     data = {
                         
@@ -330,8 +341,6 @@ server_socket.listen(1)
 print("Listening socket...")
 
 
-
-
 def handle_client(client_socket, client_address):
     message = client_socket.recv(1024).decode()
     print(message)    
@@ -347,7 +356,7 @@ def handle_client(client_socket, client_address):
         verify(user_id)
     elif message.startswith('login'):
         user_id = message.split('-')[1]
-        print("verifying.....",user_id)
+        print("logging in.....",user_id)
         verify_login(user_id)
 
 # Rest of the code
@@ -371,7 +380,7 @@ while True:
 
 
 
-# url="http://localhost/Atm/index.php"
+# url="http://localhost/pro/atm/index.php"
 # data={
 #     "logged":"logged"
 # }

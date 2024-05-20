@@ -65,12 +65,14 @@ $(document).ready(function() {
       });
 
       // $("#submit").click(function(){
-      //   const id="<?php echo $userId; ?>";
-      //   console.log("--");
-      //   console.log(id);
+      //   // const id="<?php echo $userId; ?>";
+      //   // console.log("--");
+      //   console.log("uuu");
       //   // verify("verify",id);
       //   $('#putfinger').modal('show');
 
       // });
+
+
 
         });

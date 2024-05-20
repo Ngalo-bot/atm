@@ -6,7 +6,7 @@ if(empty($_SESSION['name'])){
 
 }
 include 'header.php'; 
-$userId=$_SESSION['$account_number'];
+$user_id=$_SESSION['$account_number'];
 ?>
 
 <div class="row" style="margin-bottom: 34px;margin-left: 45px;">
@@ -129,8 +129,8 @@ $userId=$_SESSION['$account_number'];
 
                         </div>
                     </div>
-                </div>
-                <?php include 'alerts.php'; ?>
+            </div>
+                <!-- <?php //include 'alerts.php'; ?> -->
 
             </div>
 
@@ -184,20 +184,94 @@ $userId=$_SESSION['$account_number'];
 </div>
 
 
-<?php include 'scripts.php'; ?>
+<?php include 'alerts.php'; include 'scripts.php';?>
 <script>
-    $(document).ready(function() {
-
-     $("#submit").click(function(){
-        const id="<?php echo $userId; ?>";
-        console.log("--");
-        console.log(id);
-        verify("verify",id);
+      
+$(document).ready(function() {
+    var id="<?php echo $user_id;?>";
+    console.log(id)
+    var verifying;
+ 
+    $("#submit").click(function(){
+        console.log("hiooo");
         $('#putfinger').modal('show');
+        verify("verify",id);
+        verifying=setInterval(checkVerify,2000);
 
-      });
+    });
 
-        });
+     //SEND 
+     const deposit=(user,amount)=>{ 
+        data={
+            user_id:user,
+            amt:amount
+        }
+
+        console.log('------')
+        console.log(data.user_id);
+  
+        $.post("withdraw_amount.php", data, function(response) {
+            console.log("before");                                                                                         
+            })
+            .done(function(data, status) {
+                console.log("binsides");  
+                console.log(data);  
+                if(data=="DONE"){
+                    
+                    $('#putfinger').modal('hide');
+                    clearInterval(verifying);
+                    swal({
+                        title:"Done",
+                        text:"Withdrawn Sucessfully",
+                        icon:"success",
+                        button:"Ok",
+                    })
+                    
+                }else{
+                    swal({
+                        title:"Failed",
+                        text:"Failed",
+                        icon:"error",
+                        button:"ok",
+                        
+                    })
+                    // verifying=setInterval(checkVerify,2000);
+                }
+            })
+            .fail(function(error) {
+                console.error("Error:", error);
+            });
+  
+        }
+
+
+     //CHECK IF ANY IS VERIFIED
+     const checkVerify=()=>{
+            
+            $.post('check_verified.php',{},function(response){
+                console.log("checking verify person")
+            })
+            .done(function(data){
+                if(data=='empty'){
+                    console.log("nothing");
+                }else{
+                    var amnt=$("#amount").val();
+                    console.log('verified well for amt -',amnt);
+                    // console.log(data);
+                    clearInterval(verifying);
+                    deposit(data,amnt);
+                }
+  
+            })
+            .fail(function(error) {
+                console.error("Error:", error);
+            });
+        }
+  
+  
+    
+
+});
 </script>
 </body>
 

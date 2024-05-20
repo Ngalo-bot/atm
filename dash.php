@@ -113,7 +113,7 @@ include 'header.php'; ?>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-11 col-lg-12">
-                                        <span class="text-center" style="margin-left: 25px;font-weight:bolder;width: 100%; font-size: large; text-align: center;">Others</span>
+                                        <span class="text-center" style="margin-left: 25px;font-weight:bolder;width: 100%; font-size: large; text-align: center;">Balance</span>
                                         
                                     </div>
                                 </div>
