@@ -6,7 +6,7 @@ if(empty($_SESSION['name'])){
 
 }
 include 'header.php'; 
-$user_id=$_SESSION['$account_number'];
+$user_id=$_SESSION['account_number'];
 ?>
 
 <div class="row" style="margin-bottom: 34px;margin-left: 45px;">

@@ -9,7 +9,7 @@ $amt=$_POST['amt'];
         $selectStmt = $db->prepare("SELECT balance FROM account_balance WHERE account_number = ?");
         $insertStmt = $db->prepare("UPDATE account_balance SET balance= ? WHERE account_number = ?");
         $deletStmt=$db->prepare("DELETE FROM verification_process");
-        $insertBankStatement=$db->prepare("INSERT INTO bank_statement (user_id, transaction, amount) VALUES (?, ?, ?)");
+        $insertBankStatement=$db->prepare("INSERT INTO bank_statement (user_id, debit,credit) VALUES (?, ?, ?)");
 
         // Execute select statement with user ID
         $selectStmt->execute([$user_id]);
@@ -26,6 +26,7 @@ $amt=$_POST['amt'];
             // Execute insert statement with user ID, name, and surname
             // $deletStmt->execute();
             $insertStmt->execute([$balance,$user_id]);
+            $insertBankStatement->execute([$user_id,$amt,'']);
             $deletStmt->execute();
             
 

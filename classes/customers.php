@@ -42,15 +42,16 @@ class Customer {
       }
     }
   
-    public function updateCustomer($id, $name, $email, $phone) {
-      $sql = "UPDATE customers SET name = ?, email = ?, phone = ? WHERE id = ?";
+    public function updateCustomer($name,$surname, $email, $phone,$pin, $id) {
+      $sql = "UPDATE customers SET name = ?,surname=?, email = ?, phone = ?,pin=? WHERE account_number = ?";
       $stmt = $this->db->prepare($sql);
-      $stmt->bind_param("sssi", $name, $email, $phone, $id); // Bind parameters for security
-  
-      if ($stmt->execute()) {
-        return true; // Indicate successful update
+      $stmt->bind_param("ssssss", $name,$surname, $email, $phone, $pin,$id); // Bind parameters for security
+      $update=$stmt->execute();
+
+      if ($update) {
+        return "win"; // Indicate successful update
       } else {
-        return false; // Indicate failure (consider error handling)
+        return "somthing else......"; // Indicate failure (consider error handling)
       }
     }
   

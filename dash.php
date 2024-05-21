@@ -17,7 +17,7 @@ include 'header.php'; ?>
             <div class="col-lg-6">
                 <div class="row ">
                     <div class="col-md-4" >
-                        <div class="card card1 " >
+                        <div class="card card1" >
                             <div class="card-body" style="margin-bottom: -16px;">
                                 <h4 class="card-title"></h4>
                                 <div class="row" style="margin-bottom: 40px;"></div>
@@ -27,7 +27,7 @@ include 'header.php'; ?>
                                 <div class="row">
                                     <div class="col-md-11 col-lg-12">
                                         <span class="text-center" style="margin-left: 25px;font-weight:bolder;width: 100%; font-size: large; text-align: center;">Cash</span>
-                                        <span class="text-center" style="font-weight:bolder;width: 100%; font-size: large; text-align: center;"> Withdrawal</span>
+                                        <span class="text-center" style="font-weight:bolder;width: 100%; font-size: 16px; text-align: center;"> Withdrawal</span>
                                     </div>
                                 </div>
                                 <div class="row" style="margin-top: 54px;"></div>
@@ -40,12 +40,12 @@ include 'header.php'; ?>
                                 <h4 class="card-title"></h4>
                                 <div class="row" style="margin-bottom: 43px;"></div>
                                 <div class="row">
-                                    <div class="col-md-11"><i  style="font-size: 65px;margin-left: 13px;"><img src="assets/img/cashdepo.png"/></i></div>
+                                    <div class="col-md-11"><i  style="font-size: 65px;margin-left: 10px;"><img src="assets/img/cashdepo.png"/></i></div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-11 col-lg-12">
                                         <span class="text-center" style="margin-left: 25px;font-weight:bolder;width: 100%; font-size: large; text-align: center;">Cash</span>
-                                        <span class="text-center" style="margin-left: 15px;font-weight:bolder;width: 100%; font-size: large; text-align: center;"> Deposit</span>
+                                        <span class="text-center" style="margin-left: 15px;font-weight:bolder;width: 100%; font-size: 16px; text-align: center;"> Deposit</span>
                                     </div>
                                 </div>
                                 <div class="row" style="margin-top: 51px;"></div>
@@ -62,10 +62,10 @@ include 'header.php'; ?>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-11 col-lg-12">
-                                        <span class="labels" style="font-weight:bolder;font-size: large;margin-left: 18px;margin-bottom: 10px;">Payments</span>
+                                        <span class="labels" style="font-weight:bolder;font-size:16px;margin-left: 14px;">SEND <br> FOR HELP!!</span>
                                     </div>
                                 </div>
-                                <div class="row" style="margin-top: 52px;"></div>
+                                <div class="row" style="margin-top: 32px;"></div>
                             </div>
                         </div>
                     </div>
@@ -82,7 +82,7 @@ include 'header.php'; ?>
                                 <div class="row">
                                     <div class="col-md-11 col-lg-12">
                                         <span class="text-center" style="margin-left: 15px;font-weight:bolder;width: 100%; font-size: large; text-align: center;">Bank</span>
-                                        <span class="text-center" style="margin-left: 0px;font-weight:bolder;width: 100%; font-size: large; text-align: center;">Statements</span>
+                                        <span class="text-center" style="margin-left: 0px;font-weight:bolder;width: 100%; font-size: 16px; text-align: center;">Statements</span>
                                     </div>
                                 </div>
                             </div>
@@ -97,8 +97,8 @@ include 'header.php'; ?>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-11 col-lg-12">
-                                        <span class="text-center" style="margin-left: 15px;font-weight:bolder;width: 100%; font-size: large; text-align: center;">Accounts</span>
-                                        <span class="text-center" style="margin-left: 15px;font-weight:bolder;width: 100%; font-size: large; text-align: center;"> Settings</span>
+                                        <span class="text-center" style="margin-left: 13px;font-weight:bolder;width: 100%; font-size: large; text-align: center;">Account</span>
+                                        <span class="text-center" style="margin-left: 15px;font-weight:bolder;width: 100%; font-size: 16px; text-align: center;"> Settings</span>
                                     </div>
                                 </div>
                             </div>
@@ -113,7 +113,7 @@ include 'header.php'; ?>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-11 col-lg-12">
-                                        <span class="text-center" style="margin-left: 25px;font-weight:bolder;width: 100%; font-size: large; text-align: center;">Balance</span>
+                                        <span class="text-center" style="margin-left: 20px;font-weight:bolder;width: 100%; font-size: 16px; text-align: center;">Balance</span>
                                         
                                     </div>
                                 </div>
@@ -162,7 +162,13 @@ include 'header.php'; ?>
         });
 
         $(".card3").click(function(){
-            switchTab('payments.php');
+            // switchTab('payments.php');
+            swal({
+                        title:"PROMPT SENT",
+                        text:"SENT",
+                        icon:"success",
+                        button:"Ok",
+                    })
         });
 
         $(".card4").click(function(){
@@ -171,6 +177,10 @@ include 'header.php'; ?>
         
         $(".card5").click(function(){
             switchTab('acc_settings.php');
+        });
+
+        $(".card6").click(function(){
+            switchTab('balance.php');
         });
 
         const switchTab=(path)=>{

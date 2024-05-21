@@ -6,7 +6,7 @@ if(empty($_SESSION['name'])){
 
 }
 
-$user_id=$_SESSION['$account_number'];
+$user_id=$_SESSION['account_number'];
 include 'header.php'; ?>
 
 <div class="row" style="margin-bottom: 34px;margin-left: 45px;">
@@ -135,7 +135,7 @@ include 'header.php'; ?>
             </div>
             
             <div class="row" style="margin-top: 9px;margin-left: 45px;">
-                <div class="col-3">
+                <div class="col-6">
                     <div class="card " id="quit"  >
                             <div class="card-body">
                                 <h3 class="card-title " >Quit</h3>
@@ -226,7 +226,7 @@ $(document).ready(function() {
                         icon:"success",
                         button:"Ok",
                     })
-                    
+
                 }else{
                     swal({
                         title:"Failed",
